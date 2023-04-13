@@ -67,8 +67,56 @@ GROUP BY Имя;
 SELECT first_name AS Имя, MAX(age) AS Максимальный_возраст
 FROM employee
 GROUP BY Имя
-HAVING COUNT(*) = 1
+HAVING COUNT(*) > 1
 ORDER BY Максимальный_возраст;
+
+CREATE TABLE city
+(
+    city_id   INT PRIMARY KEY,
+    city_name VARCHAR(50) NOT NULL
+);
+
+ALTER TABLE employee
+    ADD city_id INT;
+
+ALTER TABLE employee
+    ADD FOREIGN KEY (city_id) REFERENCES city (city_id);
+
+INSERT INTO city (city_id, city_name)
+VALUES (1, 'New York'),
+       (2, 'Detroit'),
+       (3, 'Philadelphia'),
+       (5, 'Chicago'),
+       (6, 'Washington');
+
+UPDATE employee SET city_id=1 WHERE id = 32;
+UPDATE employee SET city_id=2 WHERE id = 33;
+UPDATE employee SET city_id=3 WHERE id = 34;
+
+SELECT * FROM employee;
+SELECT * FROM city;
+
+SELECT employee.first_name AS Имя, employee.last_name AS Фамилия, city.city_name AS Город_проживания
+FROM city
+         INNER JOIN employee ON employee.city_id = city.city_id;
+
+SELECT city.city_name AS Город_проживания, employee.first_name AS Имя, employee.last_name AS Фамилия
+FROM city
+         LEFT JOIN employee ON city.city_id = employee.city_id;
+
+SELECT employee.first_name AS Имя, city.city_name AS Город
+FROM city
+         FULL OUTER JOIN employee ON city.city_id = employee.city_id;
+
+SELECT employee.first_name AS Имя, city.city_name AS Город
+FROM employee
+         CROSS JOIN city;
+
+SELECT city.city_name AS Город_нет_сотрудников
+FROM city
+         LEFT JOIN employee USING (city_id)
+WHERE employee.city_id IS NULL;
+
 
 
 
